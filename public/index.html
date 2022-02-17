@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>vCard Viewer</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="webform to view vCards">
+    <meta name="keywords" content="vcard">
+    <meta name="author" content="Floyd Pinto">
+    <!-- Load jquery, bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="/style.css">
+    <!-- Custom CSS End -->
+</head>
+<body>
+
+    <h1>vCard Viewer</h1>
+    <br>
+
+    <h3>File Log Panel</h3>
+    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+      <table id=fileLogPanel class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+      <!-- <table class="table table-bordered table-responsive-md table-striped text-center h-25" id=fileLogPanel border=1 cellpadding=1 cellspacing=1 > -->
+      </table>
+    </div>
+    <br>
+
+<!--     <form action ="/upload" method = "post" enctype = "multipart/form-data" id="fileUp">
+        <label for="file"> Choose a .vcf file to upload </label>
+        <input type = "file" accept = ".vcf" name = "uploadFile"/>
+        <input type = "submit" value = "upload"/>
+    </form> -->
+    <form ref='uploadForm'
+        id='uploadForm'
+        method="post"
+        style="text-align:center";
+        encType = "multipart/form-data">
+        <div class="form-group" ">
+            <input type="file" id= "fileToBeUploaded" name = "uploadFile" accept = ".vcf">
+            <input type='submit' id = "uploadSubmit" class="btn btn-secondary">
+        </div>
+    </form>
+
+    <hr>
+      <div id="blah">I am blah</div>
+    <hr>
+
+
+    <h3>Card View Panel</h3>
+    <select name="cards" id="cardDD">
+      <option value="NoFiles">No Files</option>
+    </select>
+    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+      <table id=cardViewPanel class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+      </table>
+    </div>
+
+    <h3>Add Property</h3>
+    <div> 
+      <form id="addProp">
+        <label for="propName">Property Name</label>
+        <input type="text" name="propName" value="GEO" id="propName">
+        <label for="propVal">Property Value</label>
+        <input type="text" name="propVal" value="Canada" id = "propVal">
+        <input type="submit" value="Add property">
+      </form>
+    </div>
+    <hr>
+
+
+
+    
+    <!-- Modal -->
+    <div id="login" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Login Info</h4>
+          </div>
+          <div class="modal-body">	
+      <div class="form-group">
+              <label for="user">Username:</label>
+              <input type="text" class="form-control" id="user">
+            </div> 
+            <div class="form-group">
+              <label for="pass">Password:</label>
+              <input type="text" class="form-control" id="pass">
+            </div> 
+            <div class="form-group">
+              <label for="dbname">Database:</label>
+              <input type="text" class="form-control" id="dbname">
+            </div> 
+      <button type = "button" id = "submitLogin" class = 'btn btn-info btn-lg'> Submit </button>
+          </div>
+          <div class="modal-footer">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Create card</h3>
+    <div> 
+      <form id="createCard">
+        <label for="Filename">File Name</label>
+        <input type="text" name="Filename" value="newcard.vcf" id="fileVal">
+        <label for="FN">FN</label>
+        <input type="text" name="FN" value="John Doe" id = "fnVal">
+        <input type="submit" value="create card">
+      </form>
+    </div>
+
+    <button id= "add-field" type="button" onclick="addField()" >Add additional property</button>
+
+
+
+
+  <hr>
+  <h2> SQL OPERATIONS</h2>
+  <hr>
+
+  <div class="table-wrapper-scroll-y my-custom-scrollbar">
+    <table id=queryTable class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+    <!-- <table class="table table-bordered table-responsive-md table-striped text-center h-25" id=fileLogPanel border=1 cellpadding=1 cellspacing=1 > -->
+    </table>
+  </div>
+
+  <button type="button" id = "store"> Store All Files </button>
+  <button type="button" id = "clear"> Clear All Data </button>
+  <button type="button" id = "dbStatus"> Display DB Status </button>
+  <button type="button" data-toggle="modal" data-target="#form" id="showModal"> Execute Query </button>
+
+
+
+  <!--Modal Code-->
+  <div class="modal fade" id="form" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+              <div>
+                  <div class="div1 py-3 px-3"> <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
+                      <h5 class="text-center font-weight-bold"> Select Query </h5>
+                  </div>
+                  <div class="div2 py-2">
+                      <hr class="d-flex my-0 mx-4">
+                      <form class="px-2 px-md-3 py-2">
+
+                        <div> <input type="radio" name="textEditor" id="query2" checked>  Display all individuals sorted by birthday</div>
+
+                        <div> <input class="checkmark" type="radio" name="textEditor" id="query1">  Display all files</div>
+                        <div id= subquery1 hidden>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="subQuery1" id="sortQuery1Name" checked> Sort by individual name <input type="radio" name="subQuery1" id="sortQuery1Filename">  Sort by filename</div>
+
+                        <div> <input type="radio" name="textEditor" id="query3">  Display all individuals who share the same anniversary</div>
+                        <div id= subquery3 hidden>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="subQuery3" id="sortQuery3Name" checked> Sort by individual name <input type="radio" name="subQuery3" id="sortQuery3Anniversary">  Sort by anniversary</div>
+
+                        <div> <input type="radio" name="textEditor" id="query5">  Display <input class="smallTextBox" type="number" name="N" placeholder="N" id = "N"> most frequently downloaded files</div>
+                        <div id= subquery5 hidden>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="subQuery5" id="sortQuery5DownloadCount" checked> Sort by download count <input type="radio" name="subQuery5" id="sortQuery5Filename">  Sort by filename</div>
+
+                        <div> <input type="radio" name="textEditor" id="query4">  Display all files created between:</div>
+                        <input type="datetime-local" name="startDate" placeholder="YYYY-MM-DD HH:MM:SS" id = "startDate"> TO <input type="datetime-local" name="endDate" placeholder="YYYY-MM-DD HH:MM:SS" id = "endDate">
+                        <div id= subquery4 hidden><input type="radio" name="subQuery4" id="sortQuery4Name" checked> Sort by individual name <input type="radio" name="subQuery4" id="sortQuery4Filename">  Sort by filename <input type="radio" name="subQuery4" id="sortQuery4CreationDate">  Sort by creation</div>
+                        <br>
+                        <br>
+                        <button class="btn-block" data-dismiss="modal" id="executeQuery">Execute Query</button>
+                      </form>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- Leave me at the bottom of body -->
+  <script src="/index.js"></script>
+
+</body>
+</html>
+
